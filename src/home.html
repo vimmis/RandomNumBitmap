@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+   
+    <title>Home</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+    var result =0;
+    var data = null;
+    $(init)
+    function init() {
+
+    	createImage();
+    }
+    
+    function setResult(data){
+    	result = data
+    
+    }
+
+    function getQouta(){
+    	
+    	 $.ajax({
+             url: "https://www.random.org/quota/?format=plain",	 
+             type: 'GET',
+             success: function (res) {
+                	 var qouta = parseInt(res)
+                	 console.log("qouta", qouta)
+                	 if (qouta > 0){
+                		 getRandomData()
+                	 }
+                	 else{
+                		 setResult(0)
+                	 }
+             },
+    	 	error: function (res){
+    	 		console.log("Failure")
+    	 		setResult(0)
+    	 	}
+    	 });
+             
+    }
+    function getRandomData(){
+
+    	 $.ajax({
+             url: "https://www.random.org/integers/?num=8192&min=0&max=255&col=1&base=10&format=plain&rnd=new",	 
+             type: 'GET',
+             success: function (res) {
+                	 console.log("res length", res.length)
+                	 setResult(res)
+             },
+    	 	error: function (res){
+    	 		console.log("Failure")
+    	 		setResult(0)
+    	 	}
+    	 });
+             
+    }
+
+    function createImage(){
+    	getQouta()
+    	
+    	setTimeout(function(){
+    		console.log("result", result)
+        	if (result === 0){
+        		$("p").text("Either something went wrong or Random Org Qouta is full, try again after 10 minutes")
+        	}
+        	else{
+        		data = result.split('\t');
+        		
+        		console.log("result1", data)
+        		getQouta()
+        		setTimeout(function(){
+            		if (result === 0){
+            			$("p").text("Either something went wrong or Random Org Qouta is full, try again after 10 minutes")
+            		}
+            		else{
+            			data = data.concat(result.split('\t'));
+            			console.log("result2", data);
+            			console.log("data lenght:",data.length);
+            			var dataD = new Uint8Array(data)
+            			var blob = new Blob([dataD], { type: "image/bitmap" });
+            			var url = URL.createObjectURL(blob);
+            			var img = new Image();
+            			img.src = url;
+            			$("p").text("Newly generated image:");
+            			$("div").append(img);
+            			
+            		}
+            		result = null;
+        	},3000)
+    	}},3000)
+    	
+    	
+    }
+    </script>
+    <style>
+	    h1{
+		color: #52a5c3;
+		font-family: sans-serif;
+		text-align: center;
+		margin: 10px;
+		}
+		p{
+			color: balck;
+			text-align: center;
+			text-decoration: italic;
+		}
+		
+		img{
+		
+			border: solid black 10px;
+			width: 300px;
+			height:300px;
+		}
+		div{
+			text-align:center;
+		}
+    </style>
+
+</head>
+<body>
+    <h1>Welcome to Random 128x128 pixels Bitmap Generator</h1>
+    
+    <p> </p>
+    <div>
+    	
+    </div>	
+</body>
+</html>
