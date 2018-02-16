@@ -18,6 +18,6 @@ app.use(redirect)
 
 app.get('/',
     function(req, res) {
-        //res.sendPage("home.html")
-        res.sendPage("test.html")
+        res.sendPage("home.html")
+        //res.sendPage("test.html")
     });
