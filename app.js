@@ -15,8 +15,9 @@ function redirect(req, res, next) {
 }
 
 app.use(redirect)
-// Get / as home page
+
 app.get('/',
     function(req, res) {
-        res.sendPage("home.html")
+        //res.sendPage("home.html")
+        res.sendPage("test.html")
     });

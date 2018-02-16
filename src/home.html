@@ -7,19 +7,21 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
-    var result =0;
-    var data = null;
+    var result =0; //to store result from API
+    var data = null; // TO store proper array of 128*128 numbers
     $(init)
     function init() {
 
     	createImage();
     }
     
+    // To set result
     function setResult(data){
     	result = data
     
     }
 
+    // To check if Quota of Random Org is full for a user
     function getQouta(){
     	
     	 $.ajax({
@@ -32,16 +34,18 @@
                 		 getRandomData()
                 	 }
                 	 else{
-                		 setResult(0)
+                		 setResult(0) // To identify a problem later.
                 	 }
              },
     	 	error: function (res){
     	 		console.log("Failure")
-    	 		setResult(0)
+    	 		setResult(0) // To identify a problem later.
     	 	}
     	 });
              
     }
+    
+    //To get 128 *128/2  data from API, the API will be hit 2 times as it has a max limit
     function getRandomData(){
 
     	 $.ajax({
@@ -53,15 +57,17 @@
              },
     	 	error: function (res){
     	 		console.log("Failure")
-    	 		setResult(0)
+    	 		setResult(0) // To identify a problem later.
     	 	}
     	 });
              
     }
 
+    //Create Image by Calling above methods
     function createImage(){
-    	getQouta()
+    	getQouta() //API called for half the number of data required
     	
+    	// As API may take time to respond, a delay is added.
     	setTimeout(function(){
     		console.log("result", result)
         	if (result === 0){
@@ -71,7 +77,7 @@
         		data = result.split('\t');
         		
         		console.log("result1", data)
-        		getQouta()
+        		getQouta() //API called for next half of the number of data required
         		setTimeout(function(){
             		if (result === 0){
             			$("p").text("Either something went wrong or Random Org Qouta is full, try again after 10 minutes")
@@ -81,10 +87,11 @@
             			console.log("result2", data);
             			console.log("data lenght:",data.length);
             			var dataD = new Uint8Array(data)
+            			//Convert to Blob 
             			var blob = new Blob([dataD], { type: "image/bitmap" });
-            			var url = URL.createObjectURL(blob);
-            			var img = new Image();
-            			img.src = url;
+            			var url = URL.createObjectURL(blob); //Get URL of the image created
+            			var img = new Image(); //create new image element
+            			img.src = url; //Attach the URL
             			$("p").text("Newly generated image:");
             			$("div").append(img);
             			
